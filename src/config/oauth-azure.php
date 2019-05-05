@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'azure_tenant_id' => env('AZURE_TENANT_ID', 'common'),
+
     'routes' => [
         // The middleware to wrap the auth routes in.
         // Must contain session handling otherwise login will fail.
@@ -14,6 +16,7 @@ return [
         // There should be no reason to override this.
         'callback' => 'login/microsoft/callback',
     ],
+
     'credentials' => [
         'client_id' => env('AZURE_AD_CLIENT_ID', ''),
         'client_secret' => env('AZURE_AD_CLIENT_SECRET', ''),
@@ -23,6 +26,9 @@ return [
     // The route to redirect the user to upon login.
     'redirect_on_login' => '/home',
 
+    // The route to redirect the user to on error
+    'redirect_on_error' => '/',
+
     // The User Eloquent class.
     'user_class' => '\\App\\User',
 
@@ -31,7 +37,10 @@ return [
     'refresh_token_within' => 30,
 
     // The users table database column to store the user SSO ID.
-    'user_id_field' => 'azure_id',
+    'user_id_field' => 'username',
+
+    // The field from Azure which should be taken to identify the user
+    'user_azure_field' => 'id',
 
     // How to map azure user fields to Laravel user fields.
     // Do not include the id field above.
@@ -39,7 +48,5 @@ return [
     'user_map' => [
         'name' => 'name',
         'email' => 'email',
-        'name' => 'name',
-        'name' => 'name',
     ]
 ];

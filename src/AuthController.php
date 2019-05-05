@@ -2,37 +2,52 @@
 
 namespace Metrogistics\AzureSocialite;
 
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
 
 class AuthController extends Controller
 {
     public function redirectToOauthProvider()
     {
-        return Socialite::driver('azure-oauth')->redirect();
+        return Socialite::driver('oauth-azure')->redirect();
     }
 
-    public function handleOauthResponse()
+    public function handleOauthResponse(Request $request)
     {
-        $user = Socialite::driver('azure-oauth')->user();
+        if (!$request->input('code')) {
+            $redirect = redirect(config('oauth-azure.redirect_on_error'));
+            $error = 'Login failed: ' .
+                $request->input('error') .
+                ' - ' .
+                $request->input('error_description');
+            return $redirect->withErrors($error);
+        }
 
-        $authUser = $this->findOrCreateUser($user);
+        try {
+            $azure_user = Socialite::driver('oauth-azure')->user();
+        } catch(InvalidStateException $e) {
+            $azure_user = Socialite::driver('oauth-azure')->stateless()->user();
+        }
 
-        auth()->login($authUser, true);
+        $user = $this->findOrCreateUser($azure_user);
+
+        auth()->login($user, true);
 
         // session([
         //     'azure_user' => $user
         // ]);
 
         return redirect(
-            config('azure-oath.redirect_on_login')
+            config('oauth-azure.redirect_on_login')
         );
     }
 
     protected function findOrCreateUser($user)
     {
-        $user_class = config('azure-oath.user_class');
-        $authUser = $user_class::where(config('azure-oath.user_id_field'), $user->id)->first();
+        $user_class = config('oauth-azure.user_class');
+        $authUser = $user_class::where(config('oauth-azure.user_id_field'), $user->id)->first();
 
         if ($authUser) {
             return $authUser;

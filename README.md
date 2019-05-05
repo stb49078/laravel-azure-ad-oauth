@@ -37,7 +37,7 @@ All you need to do to make use of Azure AD SSO is to point a user to the `/login
 After login, you can access the basic Laravel authenticate user as normal:
 
 ```
-auth()->user();
+Auth::user();
 ```
 
 If you need to set additional user fields when the user model is created at login, you may provide a callback via the `UserFactory::userCallback()` method. A good place to do so would be in your AppServiceProvider's `boot` method:

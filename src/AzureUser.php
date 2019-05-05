@@ -46,12 +46,12 @@ class AzureUser
 
         $response = $guzzle->post('https://login.microsoftonline.com/common/oauth2/token', [
             'form_params' => [
-                'client_id' => config('azure-oath.credentials.client_id'),
+                'client_id' => config('oauth-azure.credentials.client_id'),
                 'scope' => 'user.read',
                 'refresh_token' => $this->get()->refreshToken,
-                'redirect_uri' => config('azure-oath.credentials.redirect'),
+                'redirect_uri' => config('oauth-azure.credentials.redirect'),
                 'grant_type' => 'refresh_token',
-                'client_secret' => config('azure-oath.credentials.client_secret')
+                'client_secret' => config('oauth-azure.credentials.client_secret')
             ]
         ]);
 

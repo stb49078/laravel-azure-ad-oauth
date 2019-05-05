@@ -1,30 +1,38 @@
 {
-    "name": "metrogistics/laravel-azure-ad-oauth",
-    "description": "Provides single-sign-on ability to Microsoft Azure Active Directory enabled apps.",
-    "require": {
-        "laravel/framework": ">5.4",
-        "laravel/socialite": ">3.0",
-        "guzzlehttp/guzzle": "^6.3"
+  "authors": [
+    {
+      "email": "patrick.stephan@metrogistics.com",
+      "name": "Patrick Stephan"
     },
-    "authors": [
-        {
-            "name": "Patrick Stephan",
-            "email": "patrick.stephan@metrogistics.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Metrogistics\\AzureSocialite\\": "src/"
-        }
+    {
+      "email": "carl.garner@piksel.com",
+      "name": "Carl Garner"
     },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Metrogistics\\AzureSocialite\\ServiceProvider"
-            ],
-            "aliases": {
-                "AzureUser": "Metrogistics\\AzureSocialite\\AzureUserFacade"
-            }
-        }
+    {
+      "email": "stb@stefanbauer.at",
+      "name": "Stefan Bauer"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Metrogistics\\AzureSocialite\\": "src/"
+    }
+  },
+  "description": "Provides single-sign-on ability to Microsoft Azure Active Directory enabled apps and extracts user group detail from Graph API",
+  "extra": {
+    "laravel": {
+      "aliases": {
+        "AzureUser": "Metrogistics\\AzureSocialite\\AzureUserFacade"
+      },
+      "providers": [
+        "Metrogistics\\AzureSocialite\\ServiceProvider"
+      ]
+    }
+  },
+  "name": "stb49078/laravel-azure-ad-oauth",
+  "require": {
+    "guzzlehttp/guzzle": "^6.3",
+    "laravel/framework": ">5.4",
+    "laravel/socialite": ">3.0"
+  }
 }

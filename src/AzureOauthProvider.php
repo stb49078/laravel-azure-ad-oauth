@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Laravel\Socialite\Two\User;
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\ProviderInterface;
+use Laravel\Socialite\Two\InvalidStateException;
 
 class AzureOauthProvider extends AbstractProvider implements ProviderInterface
 {
@@ -15,12 +16,12 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
 
     protected function getAuthUrl($state)
     {
-        return $this->buildAuthUrlFromBase('https://login.microsoftonline.com/common/oauth2/authorize', $state);
+        return $this->buildAuthUrlFromBase('https://login.microsoftonline.com/' . config('oauth-azure.azure_tenant_id') . '/oauth2/authorize', $state);
     }
 
     protected function getTokenUrl()
     {
-        return 'https://login.microsoftonline.com/common/oauth2/token';
+        return 'https://login.microsoftonline.com/' . config('oauth-azure.azure_tenant_id') . '/oauth2/token';
     }
 
     protected function getTokenFields($code)
@@ -35,7 +36,7 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
     {
         $response = $this->getHttpClient()->get('https://graph.microsoft.com/v1.0/me/', [
             'headers' => [
-                'Authorization' => 'Bearer '.$token,
+                'Authorization' => 'Bearer ' . $token,
             ],
         ]);
 
@@ -54,6 +55,7 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
             $token = Arr::get($response, 'access_token')
         ));
 
+        $user->token = Arr::get($response, 'access_token');
         $user->idToken = Arr::get($response, 'id_token');
         $user->expiresAt = time() + Arr::get($response, 'expires_in');
 
