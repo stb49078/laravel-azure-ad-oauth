@@ -37,7 +37,7 @@ return [
     'refresh_token_within' => 30,
 
     // The users table database column to store the user SSO ID.
-    'user_id_field' => 'username',
+    'user_id_field' => 'azure_id',
 
     // The field from Azure which should be taken to identify the user
     'user_azure_field' => 'id',

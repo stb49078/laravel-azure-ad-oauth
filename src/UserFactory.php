@@ -5,7 +5,8 @@ namespace Metrogistics\AzureSocialite;
 class UserFactory
 {
     protected $config;
-    protected static $user_callback;
+    protected static $user_create_callback;
+    protected static $user_login_callback;
 
     public function __construct()
     {
@@ -28,7 +29,7 @@ class UserFactory
             $user->$user_field = $azure_user->$azure_field;
         }
 
-        $callback = static::$user_callback;
+        $callback = static::$user_create_callback;
 
         if($callback && is_callable($callback)){
             $callback($user, $azure_user);
@@ -38,13 +39,30 @@ class UserFactory
 
         return $user;
     }
+    
+    public function userLogin($azure_user, $user) {
+	    $callback = static::$user_login_callback;
 
-    public static function userCallback($callback)
+	    if($callback && is_callable($callback)){
+		    $callback($user, $azure_user);
+	    }
+    }
+
+    public static function userCreateCallback($callback)
     {
         if(! is_callable($callback)){
             throw new \Exception("Must provide a callable.");
         }
 
-        static::$user_callback = $callback;
+        static::$user_create_callback = $callback;
+    }
+
+    public static function userLoginCallback($callback)
+    {
+        if(! is_callable($callback)){
+            throw new \Exception("Must provide a callable.");
+        }
+
+        static::$user_login_callback = $callback;
     }
 }

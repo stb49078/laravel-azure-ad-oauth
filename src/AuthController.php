@@ -44,17 +44,23 @@ class AuthController extends Controller
         );
     }
 
-    protected function findOrCreateUser($user)
+    protected function findOrCreateUser($azure_user)
     {
-        $user_class = config('oauth-azure.user_class');
-        $authUser = $user_class::where(config('oauth-azure.user_id_field'), $user->id)->first();
+	    $user_class = config('oauth-azure.user_class');
+	    $user_field = config('oauth-azure.user_azure_field');
 
-        if ($authUser) {
-            return $authUser;
-        }
+	    $authUser = $user_class::where(config('oauth-azure.user_id_field'), $azure_user->$user_field)->first();
 
-        $UserFactory = new UserFactory();
+	    $userFactory = new UserFactory();
 
-        return $UserFactory->convertAzureUser($user);
+	    if ($authUser) {
+	    	$userFactory->userLogin($azure_user, $authUser);
+		    return $authUser;
+
+	    } else {
+		    $convertAzureUser = $userFactory->convertAzureUser($azure_user, $authUser);
+		    $userFactory->userLogin($azure_user, $convertAzureUser);
+		    return $convertAzureUser;
+	    }
     }
 }
